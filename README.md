@@ -8,7 +8,7 @@ A RAG-powered faith-formation assistant for the Igniters Catholic youth ministry
 - **Backend:** Next.js API Routes (Node.js runtime)
 - **Database:** PostgreSQL 16 with pgvector — single DB for relational data and vector embeddings
 - **Embeddings:** BGE-small-en-v1.5 via Hugging Face Transformers.js (runs locally, no API key)
-- **Generation:** Claude via Vercel AI SDK, streamed to the frontend
+- **Generation:** Llama 3.3 70B via Groq (Vercel AI SDK), streamed to the frontend
 - **RAG orchestration:** LangChain.js (document loaders, text splitters)
 - **Infrastructure:** Docker + docker-compose for local dev; AWS ECS/Fargate + RDS + S3 for production
 
@@ -41,9 +41,17 @@ docker compose up db -d
 # Run database migrations
 npm run migrate
 
+# Verify your Groq API key is working (optional but recommended)
+npm run check:ai
+
+# Seed a few sample documents so the assistant has material to cite
+npm run seed
+
 # Start dev server
 npm run dev
 ```
+
+> Get a free Groq API key (no credit card) at [console.groq.com/keys](https://console.groq.com/keys) and set `GROQ_API_KEY` in `.env.local`.
 
 Open [http://localhost:3000](http://localhost:3000).
 
@@ -69,14 +77,15 @@ src/
 └── types/         # Shared TypeScript types
 scripts/
 ├── migrate.ts     # Run database schema migrations
-└── seed.ts        # Seed test documents (Phase 3+)
+├── seed.ts        # Seed sample documents for local RAG testing
+└── check-ai.ts    # Preflight check for the Groq API key
 ```
 
 ## Build phases
 
-1. **Foundation** — auth, role-based routing, DB schema
-2. **Streaming chat** — Claude integration with hardcoded context
-3. **RAG retrieval** — local embeddings + pgvector similarity search
+1. ✅ **Foundation** — auth, role-based routing, DB schema
+2. ✅ **Streaming chat** — Groq/Llama integration with hardcoded context
+3. ✅ **RAG retrieval** — local embeddings + pgvector similarity search
 4. **Ingestion pipeline** — document upload, chunking, admin dashboard
 5. **Citations + history** — source attribution, session persistence
 6. **AWS deployment** — ECS Fargate, RDS, S3, GitHub Actions CI/CD
