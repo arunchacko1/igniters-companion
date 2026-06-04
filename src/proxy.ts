@@ -14,10 +14,18 @@ export async function proxy(req: NextRequest) {
     return NextResponse.next();
   }
 
+  // API routes expect JSON, so an auth failure should return a 401 rather
+  // than a redirect to the login page (which a programmatic client can't use).
+  const isApi = pathname.startsWith("/api/");
+  const unauthorized = () =>
+    isApi
+      ? NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+      : NextResponse.redirect(new URL("/login", req.url));
+
   const token = req.cookies.get("igniters_session")?.value;
 
   if (!token) {
-    return NextResponse.redirect(new URL("/login", req.url));
+    return unauthorized();
   }
 
   try {
@@ -29,7 +37,7 @@ export async function proxy(req: NextRequest) {
 
     return NextResponse.next();
   } catch {
-    return NextResponse.redirect(new URL("/login", req.url));
+    return unauthorized();
   }
 }
 
