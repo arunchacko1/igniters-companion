@@ -8,11 +8,13 @@
     "start": "next start",
     "lint": "eslint",
     "migrate": "tsx --env-file=.env.local scripts/migrate.ts",
-    "seed": "tsx --env-file=.env.local scripts/seed.ts"
+    "seed": "tsx --env-file=.env.local scripts/seed.ts",
+    "check:ai": "tsx --env-file=.env.local scripts/check-ai.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.81",
     "@ai-sdk/google": "^3.0.80",
+    "@ai-sdk/groq": "^3.0.39",
     "@ai-sdk/react": "^3.0.198",
     "ai": "^6.0.196",
     "bcryptjs": "^3.0.3",

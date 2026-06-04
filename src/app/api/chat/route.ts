@@ -1,5 +1,5 @@
 import { streamText } from "ai";
-import { google } from "@ai-sdk/google";
+import { groq } from "@ai-sdk/groq";
 import { requireAuth, unauthorizedResponse } from "@/lib/auth/guards";
 import { SYSTEM_PROMPT } from "@/lib/context/hardcoded";
 
@@ -13,7 +13,7 @@ export async function POST(req: Request) {
   const { messages } = await req.json();
 
   const result = streamText({
-    model: google("gemini-1.5-flash"),
+    model: groq("llama-3.3-70b-versatile"),
     system: SYSTEM_PROMPT,
     messages,
   });
