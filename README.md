@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Igniters Companion
 
-## Getting Started
+A RAG-powered faith-formation assistant for the Igniters Catholic youth ministry. Leaders and members can ask questions about Catholic teaching, Syro-Malabar tradition, and group materials — answers are grounded in uploaded documents and include citations.
 
-First, run the development server:
+## Stack
+
+- **Frontend:** Next.js 16 (App Router), React 19, Tailwind CSS
+- **Backend:** Next.js API Routes (Node.js runtime)
+- **Database:** PostgreSQL 16 with pgvector — single DB for relational data and vector embeddings
+- **Embeddings:** BGE-small-en-v1.5 via Hugging Face Transformers.js (runs locally, no API key)
+- **Generation:** Claude via Vercel AI SDK, streamed to the frontend
+- **RAG orchestration:** LangChain.js (document loaders, text splitters)
+- **Infrastructure:** Docker + docker-compose for local dev; AWS ECS/Fargate + RDS + S3 for production
+
+## Roles
+
+| Role | Capabilities |
+|------|-------------|
+| Member | Chat with the assistant |
+| Leader | Chat + upload/manage source documents |
+
+## Local development
+
+### Prerequisites
+
+- Node.js 20+
+- Docker + docker-compose
+
+### Setup
 
 ```bash
+# Install dependencies
+npm install
+
+# Copy env template and fill in secrets
+cp .env.example .env.local
+
+# Start Postgres with pgvector
+docker compose up db -d
+
+# Run database migrations
+npm run migrate
+
+# Start dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Running with Docker
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+docker compose up --build
+```
 
-## Learn More
+## Project structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+├── app/           # Next.js App Router pages and API routes
+├── components/    # React components
+├── lib/
+│   ├── db/        # PostgreSQL client and query functions
+│   ├── auth/      # JWT session helpers and route guards
+│   ├── embeddings/# Transformers.js embedding pipeline
+│   ├── ingest/    # Document ingestion pipeline
+│   ├── retrieval/ # Vector search and context assembly
+│   └── s3/        # S3 client for document storage
+└── types/         # Shared TypeScript types
+scripts/
+├── migrate.ts     # Run database schema migrations
+└── seed.ts        # Seed test documents (Phase 3+)
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Build phases
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Foundation** — auth, role-based routing, DB schema
+2. **Streaming chat** — Claude integration with hardcoded context
+3. **RAG retrieval** — local embeddings + pgvector similarity search
+4. **Ingestion pipeline** — document upload, chunking, admin dashboard
+5. **Citations + history** — source attribution, session persistence
+6. **AWS deployment** — ECS Fargate, RDS, S3, GitHub Actions CI/CD
