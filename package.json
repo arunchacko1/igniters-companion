@@ -11,6 +11,10 @@
     "seed": "tsx --env-file=.env.local scripts/seed.ts"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^3.0.81",
+    "@ai-sdk/google": "^3.0.80",
+    "@ai-sdk/react": "^3.0.198",
+    "ai": "^6.0.196",
     "bcryptjs": "^3.0.3",
     "jose": "^6.2.3",
     "next": "16.2.7",
