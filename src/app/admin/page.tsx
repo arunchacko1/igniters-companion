@@ -1,3 +1,5 @@
+import DocumentManager from "@/components/DocumentManager";
+
 export default function AdminPage() {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
@@ -11,11 +13,8 @@ export default function AdminPage() {
         </a>
       </header>
 
-      <main className="flex-1 flex items-center justify-center">
-        <div className="text-center text-slate-400">
-          <p className="text-lg font-medium">Document management coming soon</p>
-          <p className="text-sm mt-1">Upload and manage source documents in Phase 4.</p>
-        </div>
+      <main className="flex-1">
+        <DocumentManager />
       </main>
     </div>
   );

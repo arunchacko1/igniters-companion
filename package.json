@@ -17,6 +17,7 @@
     "@ai-sdk/groq": "^3.0.39",
     "@ai-sdk/react": "^3.0.198",
     "@huggingface/transformers": "^4.2.0",
+    "@langchain/textsplitters": "^1.0.1",
     "ai": "^6.0.196",
     "bcryptjs": "^3.0.3",
     "jose": "^6.2.3",
