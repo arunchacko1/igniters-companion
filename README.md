@@ -10,7 +10,7 @@ A RAG-powered faith-formation assistant for the Igniters Catholic youth ministry
 - **Embeddings:** BGE-small-en-v1.5 via Hugging Face Transformers.js (runs locally, no API key)
 - **Generation:** Llama 3.3 70B via Groq (Vercel AI SDK), streamed to the frontend
 - **RAG orchestration:** LangChain.js (document loaders, text splitters)
-- **Infrastructure:** Docker + docker-compose for local dev; AWS ECS/Fargate + RDS + S3 for production
+- **Infrastructure:** Docker + docker-compose for local dev; AWS EC2 + RDS Postgres for production, image built and deployed via GitHub Actions
 
 ## Roles
 
@@ -72,8 +72,7 @@ src/
 │   ├── auth/      # JWT session helpers and route guards
 │   ├── embeddings/# Transformers.js embedding pipeline
 │   ├── ingest/    # Document ingestion pipeline
-│   ├── retrieval/ # Vector search and context assembly
-│   └── s3/        # S3 client for document storage
+│   └── retrieval/ # Vector search and context assembly
 └── types/         # Shared TypeScript types
 scripts/
 ├── migrate.ts     # Run database schema migrations
@@ -86,6 +85,6 @@ scripts/
 1. ✅ **Foundation** — auth, role-based routing, DB schema
 2. ✅ **Streaming chat** — Groq/Llama integration with hardcoded context
 3. ✅ **RAG retrieval** — local embeddings + pgvector similarity search
-4. **Ingestion pipeline** — document upload, chunking, admin dashboard
-5. **Citations + history** — source attribution, session persistence
-6. **AWS deployment** — ECS Fargate, RDS, S3, GitHub Actions CI/CD
+4. ✅ **Ingestion pipeline** — document upload, chunking, admin dashboard
+5. ✅ **Citations + history** — source attribution, session persistence
+6. ✅ **AWS deployment** — EC2 + RDS, Docker, GitHub Actions CI/CD
