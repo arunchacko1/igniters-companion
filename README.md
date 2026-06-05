@@ -1,3 +1,13 @@
+---
+title: Igniters Companion
+emoji: 🔥
+colorFrom: red
+colorTo: orange
+sdk: docker
+app_port: 3000
+pinned: false
+---
+
 # Igniters Companion
 
 A RAG-powered faith-formation assistant for the Igniters Catholic youth ministry. Leaders and members can ask questions about Catholic teaching, Syro-Malabar tradition, and group materials — answers are grounded in uploaded documents and include citations.
