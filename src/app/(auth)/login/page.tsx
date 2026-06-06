@@ -10,6 +10,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [demoLoading, setDemoLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -27,6 +28,20 @@ export default function LoginPage() {
 
     if (!res.ok) {
       setError(data.error ?? "Login failed");
+      return;
+    }
+
+    router.push("/chat");
+  }
+
+  async function handleDemo() {
+    setError("");
+    setDemoLoading(true);
+
+    const res = await fetch("/api/auth/demo", { method: "POST" });
+    if (!res.ok) {
+      setDemoLoading(false);
+      setError("Could not start the demo. Please try again.");
       return;
     }
 
@@ -68,12 +83,31 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || demoLoading}
             className="w-full rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 transition-colors"
           >
             {loading ? "Signing in…" : "Sign in"}
           </button>
         </form>
+
+        <div className="my-5 flex items-center gap-3">
+          <span className="h-px flex-1 bg-slate-200" />
+          <span className="text-xs text-slate-400">or</span>
+          <span className="h-px flex-1 bg-slate-200" />
+        </div>
+
+        <button
+          type="button"
+          onClick={handleDemo}
+          disabled={loading || demoLoading}
+          className="w-full rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50 transition-colors"
+        >
+          {demoLoading ? "Starting demo…" : "Try the demo"}
+        </button>
+        <p className="mt-2 text-center text-xs text-slate-400">
+          No sign-up needed. This is a live demo on a free tier — the first
+          response can take ~30s while it wakes up.
+        </p>
 
         <p className="mt-6 text-center text-sm text-slate-500">
           No account?{" "}

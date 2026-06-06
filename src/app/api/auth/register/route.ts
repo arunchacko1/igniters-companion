@@ -8,7 +8,7 @@ import { signToken, cookieName, cookieOptions } from "@/lib/auth/session";
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, password, role } = await req.json();
+    const { email, password } = await req.json();
 
     if (!email || !password) {
       return Response.json({ error: "Email and password are required" }, { status: 400 });
@@ -19,8 +19,11 @@ export async function POST(req: NextRequest) {
       return Response.json({ error: "Email already in use" }, { status: 409 });
     }
 
+    // Public self-registration always creates a Member. Leader accounts (which
+    // can upload/delete documents) are provisioned out of band, so a public
+    // visitor can't grant themselves admin by POSTing role: "leader".
     const passwordHash = await hash(password, 12);
-    const user = await createUser(email, passwordHash, role === "leader" ? "leader" : "member");
+    const user = await createUser(email, passwordHash, "member");
 
     const token = await signToken({ sub: user.id, email: user.email, role: user.role });
     const cookieStore = await cookies();
