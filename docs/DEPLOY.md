@@ -1,5 +1,10 @@
 # Deploying Igniters Companion (AWS free tier)
 
+> **The canonical deploy path is Hugging Face Spaces — see
+> [DEPLOY-HF.md](DEPLOY-HF.md).** This AWS EC2 + RDS runbook is kept as an
+> alternative for a self-hosted, always-on deployment.
+
+
 Target: one **EC2 t3.micro** running the app container, with **RDS Postgres**
 for the database. Everything here fits the AWS free tier (12-month allowances,
 or signup credits). Postgres runs on RDS — not on the EC2 box — because 1GB of
