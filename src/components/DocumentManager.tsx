@@ -75,13 +75,14 @@ export default function DocumentManager() {
       >
         <h2 className="text-sm font-semibold text-slate-800 mb-1">Upload a document</h2>
         <p className="text-xs text-slate-500 mb-4">
-          Plain text or Markdown (.txt, .md). It will be chunked and embedded for search.
+          Text, Markdown, or PDF (.txt, .md, .pdf). It will be chunked and embedded for search.
+          PDFs must have a text layer — scanned or image-only files aren&apos;t supported.
         </p>
         <div className="flex items-center gap-3">
           <input
             ref={fileInputRef}
             type="file"
-            accept=".txt,.md"
+            accept=".txt,.md,.pdf"
             className="flex-1 text-sm text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-100 file:px-3 file:py-2 file:text-sm file:text-slate-700 hover:file:bg-slate-200"
           />
           <button

@@ -1,9 +1,10 @@
 import { requireLeader, forbiddenResponse, unauthorizedResponse } from "@/lib/auth/guards";
 import { createDocument, listDocuments, setDocumentStatus } from "@/lib/db/queries/documents";
 import { ingestDocument } from "@/lib/ingest";
+import { extractPdfText } from "@/lib/ingest/pdf";
 import type { JwtPayload } from "@/types";
 
-const ALLOWED_EXTENSIONS = [".txt", ".md"];
+const ALLOWED_EXTENSIONS = [".txt", ".md", ".pdf"];
 
 // Map a guard error to the right HTTP response (403 for a logged-in non-leader,
 // 401 otherwise). Returns null when the caller is a leader.
@@ -39,15 +40,25 @@ export async function POST(req: Request) {
     return Response.json({ error: "No file provided" }, { status: 400 });
   }
   if (!ALLOWED_EXTENSIONS.some((ext) => file.name.toLowerCase().endsWith(ext))) {
-    return Response.json({ error: "Only .txt and .md files are supported" }, { status: 400 });
+    return Response.json({ error: "Only .txt, .md, and .pdf files are supported" }, { status: 400 });
   }
 
-  const text = await file.text();
+  const isPdf = file.name.toLowerCase().endsWith(".pdf");
+  const text = isPdf ? await extractPdfText(await file.arrayBuffer()) : await file.text();
   if (!text.trim()) {
-    return Response.json({ error: "File is empty" }, { status: 400 });
+    // A PDF with no extractable text is almost always a scanned/image-only file,
+    // which would need OCR. Tell the leader rather than failing silently.
+    return Response.json(
+      {
+        error: isPdf
+          ? "No text could be extracted. Scanned or image-only PDFs aren't supported."
+          : "File is empty",
+      },
+      { status: 400 }
+    );
   }
 
-  const title = file.name.replace(/\.(txt|md)$/i, "");
+  const title = file.name.replace(/\.(txt|md|pdf)$/i, "");
   const doc = await createDocument(
     title,
     `upload:${file.name}`,
